@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:salihflutter/registrationPage.dart';
+import 'package:salihflutter/storage%20preferences/sqflite%20crud/sqlflite_contact_book.dart';
 
 import 'home.dart';
 
 //
-void main() {
-  runApp(MaterialApp(
-    home: Login_Page(),
-  ));
-}
 
 class Login_Page extends StatelessWidget {
   String username = "admin@gmail.com";

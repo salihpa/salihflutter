@@ -1,105 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:form_validator/form_validator.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: RegistrationPage(),
+    home: registrationPage(),
   ));
 }
 
-class RegistrationPage extends StatelessWidget {
-  const RegistrationPage({super.key});
+class myapp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: registrationPage(),
+    );
+  }
+}
+
+class registrationPage extends StatefulWidget {
+  @override
+  _RegistrationPageState createState() => _RegistrationPageState();
+}
+
+class _RegistrationPageState extends State<registrationPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
+  String _confirmPassword = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Registration Page"),
+        title: Text('Registration Page'),
       ),
-      body: const SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(18.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
           child: Column(
-            children: [
-              Image.asset(
-                "assets/images/pngtree-salon-logo-png-image_6872052.png",
-                height: 100,
-                width: 100,
-
-
-
-
-
-          const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: "Name",
-                      labelText: "Name",
-                      prefixIcon: Icon(Icons.supervised_user_circle_outlined),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)))),
-                ),
-   ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: "PhoneNumber",
-                      labelText: "PhoneNumber",
-                      helperText: 'Enter the existing phone number',
-                      prefixIcon: Icon(Icons.phone),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)))),
-                ),
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: ValidationBuilder().email().required().build(),
+                onSaved: (value) {
+                  _email = value!;
+                },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: "UserName",
-                      labelText: "UserName",
-                      helperText: 'UserName Must be an Email',
-                      prefixIcon: Icon(Icons.people_alt_rounded),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)))),
-                ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password'),
+                validator: ValidationBuilder()
+                    .minLength(6, 'Password must be at least 6 characters')
+                    .required()
+                    .build(),
+                onSaved: (value) {
+                  _password = value!;
+                },
+                obscureText: true,
               ),
-              // SizedBox(height: 15,),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 15.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: "PassWord",
-                      labelText: "PassWord",
-                      helperText: 'Password Must Contain 6 characters',
-                      prefixIcon: Icon(Icons.password),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)))),
-                ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Confirm Password'),
+                validator: (value) {
+                  if (value != _password) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+                obscureText: true,
               ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 15.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: "Confirm PassWord",
-                      labelText: "Confirm  PassWord",
-                      helperText: 'Password Must be same',
-                      prefixIcon: Icon(Icons.password),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)))),
-                ),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: Text('Register'),
               ),
-              ElevatedButton(onPressed: () {}, child: const Text("Register")),
-    );
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      // Perform registration logic here with _email and _password
+    }
+  }
+}
